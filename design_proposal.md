@@ -1,6 +1,10 @@
 ### Temat
 Wykorzystanie uczenia semi-nadzorowanego w sieciach prototypowych w zadaniach klasyfikacji muzyki
 
+### Zespół
+- Olga Krupa
+- Adam Górski
+
 ### Harmonogram
 - 27.10-14.11 - dokładne zapoznanie się z artykułami naukowymi, konfiguracja środowiska, pierwszy prototyp i eksperymenty
 - 15.11-31.11 - optymalizacja hiperparameterów przy pomocy optuny, analiza błędów i efektywności przy pomocy weight and biases.
