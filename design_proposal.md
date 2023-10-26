@@ -16,7 +16,7 @@ Będziemy się także opierać na [Few-Shot and Zero-Shot Learning for Music Inf
 
 ### Zakres eksperymentów
 - Przetestowanie wykorzystywanych bibliotek i efektywności prototypu.
-- Zbadnie róznych metod uczenia semi-nadzorowanego w sieciach prototypowych 
+- Zbadnie różnych metod uczenia semi-nadzorowanego w sieciach prototypowych 
 - Optymalizacja hiperparameterów przy pomocy optun-y.
 - Przetestowanie efektywności modelu z punktu widzenia użytkownika przy pomocy aplikacji webowej.
 
