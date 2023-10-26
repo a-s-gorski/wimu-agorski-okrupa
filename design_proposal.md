@@ -1,3 +1,6 @@
+### Temat
+Wykorzystanie uczenia semi-nadzorowanego w sieciach prototypowych w zadaniach klasyfikacji muzyki
+
 ### Harmonogram
 - 27.10-14.11 - dokładne zapoznanie się z artykułami naukowymi, konfiguracja środowiska, pierwszy prototyp i eksperymenty
 - 15.11-31.11 - optymalizacja hiperparameterów przy pomocy optuny, analiza błędów i efektywności przy pomocy weight and biases.
@@ -5,14 +8,15 @@
 - 01.01-14.01 - dalsze konsultacje, analiza wyników i postępów
 
 ### Bibliografia
-Planujemy oprzeć nasze podejście few-shot learning (uczenie na zbiorze z małą ilością przykładów trenujących) o metody podane w tym
-artykule  [Meta-Learning for Semi-Supervised Few-Shot Classification](https://arxiv.org/abs/1803.00676).
-Dodatkowo planujemy wykorzystać sieci prototypowe, których działanie jest opisane w tym materiale naukowym
-[Prototypical Networks for Few-shot Learning](https://arxiv.org/abs/1703.05175).
-Będziemy także korzystać z metody MUSIC, której działanie jest opisane w artykule [An Embarrassingly Simple Approach to Semi-Supervised Few-Shot Learning](https://arxiv.org/abs/2209.13777). Będziemy się także opierać na [Few-Shot and Zero-Shot Learning for Music Information Retrieval](https://music-fsl-zsl.github.io/tutorial) jako merytorycznym fundamencie w kwestiach "few-shot learning".
+W ramach projektu zostanie wykorzystana sieć prototypowa, której działanie jest opisane w materiale naukowym
+[Prototypical Networks for Few-shot Learning](https://arxiv.org/abs/1703.05175). Powyższa sieć jest wykorzystywana w zadaniach few-shot learning, czyli uczenia na zbiorze z małą ilością przykładów trenujących.
+Głównym celem projektu jest sprawdzenie oraz zaimplementowanie różnych metod semi-nadzorowanych w sieciach prototypowych. Badania te będą się opierać na pracy naukowej [Meta-Learning for Semi-Supervised Few-Shot Classification](https://arxiv.org/abs/1803.00676).
+Dodatkowo planujemy zaimplementować nową metodę MUSIC, której działanie jest opisane w artykule [An Embarrassingly Simple Approach to Semi-Supervised Few-Shot Learning](https://arxiv.org/abs/2209.13777). 
+Będziemy się także opierać na [Few-Shot and Zero-Shot Learning for Music Information Retrieval](https://music-fsl-zsl.github.io/tutorial) jako merytorycznym fundamencie w kwestiach "few-shot learning" w dziedzinie MIR.
 
 ### Zakres eksperymentów
 - Przetestowanie wykorzystywanych bibliotek i efektywności prototypu.
+- Zbadnie róznych metod uczenia semi-nadzorowanego w sieciach prototypowych 
 - Optymalizacja hiperparameterów przy pomocy optun-y.
 - Przetestowanie efektywności modelu z punktu widzenia użytkownika przy pomocy aplikacji webowej.
 
