@@ -36,3 +36,4 @@ Będziemy także korzystać z metody MUSIC, której działanie jest opisane w ar
 - Docker
 - fastapi
 - flake8, autopep8
+- cookiecutter based project structure
