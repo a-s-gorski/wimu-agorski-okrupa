@@ -1,6 +1,10 @@
 wimu-gorski-okrupa
 ==============================
 
+1) Install poetry 1.7.0
+2) 
+
+
 A short description of the project.
 
 Project Organization

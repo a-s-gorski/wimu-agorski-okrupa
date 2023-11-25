@@ -8,6 +8,8 @@ authors = ["adamsebastiangorski <adamsebastiangorski@gmail.com>"]
 python = "^3.10"
 cookiecutter = "^2.4.0"
 dagshub = "^0.3.9"
+dvc = "2.58.2"
+dvc-s3 = "^2.23.0"
 
 [tool.poetry.dev-dependencies]
 
