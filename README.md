@@ -1,8 +1,35 @@
-wimu-gorski-okrupa
-==============================
+# WIMU - music classification using few shot learning
+
+WiMU-Gorski-Okrupa is a project designed to [provide a brief description of the project].
+
+## Getting Started
+
+Follow these steps to set up and run the project on your local machine.
+
+### Prerequisites
+
+Make sure you have Poetry 1.7.0 installed.
 
 1) Install poetry 1.7.0
-2) 
+```bash
+# Install poetry
+curl -sSL https://install.python-poetry.org | python3 -
+```
+
+2) To install dependencies, run 
+```bash 
+make requirements 
+```
+- If you want to install pytorch without CUDA support, replace pytorch in pyproject.toml in pytorch_cpu.
+3) To download data first setup environment variables ACCESS_KEY_ID and SECRET_ACCESS_KEY or directly update the Makefile, then run `make download_data`
+4) To start data loading, run `make dataset`.
+
+
+Environment variables:
+- SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True
+    - necessary for installing music-fsl as it depends on a depraceted version of scikit-learn.
+- ACCESS_KEY_ID - access key to access the S3 bucket.
+- SECRET_ACCESS_KEY - secret key to access the S3 bucket.
 
 
 A short description of the project.

@@ -1,1 +1,4 @@
 /data
+logs/**
+notebooks/lightning_logs/**
+notebooks/logs/**

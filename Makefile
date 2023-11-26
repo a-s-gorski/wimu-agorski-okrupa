@@ -5,30 +5,53 @@
 #################################################################################
 
 PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-BUCKET = [OPTIONAL] your-bucket-for-syncing-data (do not include 's3://')
+# BUCKET = [OPTIONAL] your-bucket-for-syncing-data (do not include 's3://')
 PROFILE = default
 PROJECT_NAME = wimu-gorski-okrupa
 PYTHON_INTERPRETER = python3
-
-ifeq (,$(shell which conda))
-HAS_CONDA=False
-else
-HAS_CONDA=True
-endif
-
+	
 #################################################################################
 # COMMANDS                                                                      #
 #################################################################################
 
 ## Install Python Dependencies
 requirements: test_environment
-	$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel poetry
+	$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel poetry==1.7.0
 	$(PYTHON_INTERPRETER) poetry shell
-	$(PYTHON_INTERPRETER) -m pip install -r requirements.txt
+	$(PYTHON_INTERPRETER) poetry install
+
+update_data:
+	dvc add data/.
+	dvc push -r origin
+
+download_data:
+	poetry shell
+	dvc remote add origin s3://dvc -f
+	if [ -z "$(ACCESS_KEY_ID)" ] || [ -z "$(SECRET_ACCESS_KEY)" ]; then \
+		echo "Error: Both ACCESS_KEY_ID and SECRET_ACCESS_KEY environment variables are required."; \
+		exit 1; \
+	fi
+	dvc remote modify origin endpointurl https://dagshub.com/a-s-gorski/datasets-wimu.s3
+	dvc remote modify origin --local access_key_id c1a680246e6ad9263189cd51095a90f562055e4e
+	dvc remote modify origin --local secret_access_key c1a680246e6ad9263189cd51095a90f562055e4e
+	dvc pull -r origin -f
+
+extract_data:
+	unzip -o data/raw/tiny_sol/TinySOL.zip -d data/interim/tiny_sol
+	unzip -o data/raw/good_sounds/good-sounds.zip -d data/interim/good_sounds
+	unzip -o data/raw/irmas/IRMAS-TrainingData.zip -d data/interim/irmas
+	unzip -o data/raw/kaggle_wavefile_of_instruments/kaggle_wavefiles_of_instruments.zip -d data/interim/kaggle_wavefiles_of_instruments
 
 ## Make Dataset
-data: requirements
-	$(PYTHON_INTERPRETER) src/data/make_dataset.py data/raw data/processed
+dataset:
+	$(PYTHON_INTERPRETER) -m src.data.make_dataset irmas config/dataset.yml data/interim/irmas/IRMAS-TrainingData data/processed
+
+## Train the model
+train:
+	$(PYTHON_INTERPRETER) -m src.models.train_model irmas config/training.yml data/processed data/model_output/irmas
+
+format_code:
+	cd src && isort . && autopep8 -i -r --max-line-length 79 -a -a -a  .
 
 ## Delete all compiled Python files
 clean:
@@ -39,39 +62,7 @@ clean:
 lint:
 	flake8 src
 
-## Upload Data to S3
-sync_data_to_s3:
-ifeq (default,$(PROFILE))
-	aws s3 sync data/ s3://$(BUCKET)/data/
-else
-	aws s3 sync data/ s3://$(BUCKET)/data/ --profile $(PROFILE)
-endif
 
-## Download Data from S3
-sync_data_from_s3:
-ifeq (default,$(PROFILE))
-	aws s3 sync s3://$(BUCKET)/data/ data/
-else
-	aws s3 sync s3://$(BUCKET)/data/ data/ --profile $(PROFILE)
-endif
-
-## Set up python interpreter environment
-create_environment:
-ifeq (True,$(HAS_CONDA))
-		@echo ">>> Detected conda, creating conda environment."
-ifeq (3,$(findstring 3,$(PYTHON_INTERPRETER)))
-	conda create --name $(PROJECT_NAME) python=3
-else
-	conda create --name $(PROJECT_NAME) python=2.7
-endif
-		@echo ">>> New conda env created. Activate with:\nsource activate $(PROJECT_NAME)"
-else
-	$(PYTHON_INTERPRETER) -m pip install -q virtualenv virtualenvwrapper
-	@echo ">>> Installing virtualenvwrapper if not already installed.\nMake sure the following lines are in shell startup file\n\
-	export WORKON_HOME=$$HOME/.virtualenvs\nexport PROJECT_HOME=$$HOME/Devel\nsource /usr/local/bin/virtualenvwrapper.sh\n"
-	@bash -c "source `which virtualenvwrapper.sh`;mkvirtualenv $(PROJECT_NAME) --python=$(PYTHON_INTERPRETER)"
-	@echo ">>> New virtualenv created. Activate with:\nworkon $(PROJECT_NAME)"
-endif
 
 ## Test python environment is setup correctly
 test_environment:
@@ -82,64 +73,3 @@ test_environment:
 #################################################################################
 
 
-
-#################################################################################
-# Self Documenting Commands                                                     #
-#################################################################################
-
-.DEFAULT_GOAL := help
-
-# Inspired by <http://marmelab.com/blog/2016/02/29/auto-documented-makefile.html>
-# sed script explained:
-# /^##/:
-# 	* save line in hold space
-# 	* purge line
-# 	* Loop:
-# 		* append newline + line to hold space
-# 		* go to next line
-# 		* if line starts with doc comment, strip comment character off and loop
-# 	* remove target prerequisites
-# 	* append hold space (+ newline) to line
-# 	* replace newline plus comments by `---`
-# 	* print line
-# Separate expressions are necessary because labels cannot be delimited by
-# semicolon; see <http://stackoverflow.com/a/11799865/1968>
-.PHONY: help
-help:
-	@echo "$$(tput bold)Available rules:$$(tput sgr0)"
-	@echo
-	@sed -n -e "/^## / { \
-		h; \
-		s/.*//; \
-		:doc" \
-		-e "H; \
-		n; \
-		s/^## //; \
-		t doc" \
-		-e "s/:.*//; \
-		G; \
-		s/\\n## /---/; \
-		s/\\n/ /g; \
-		p; \
-	}" ${MAKEFILE_LIST} \
-	| LC_ALL='C' sort --ignore-case \
-	| awk -F '---' \
-		-v ncol=$$(tput cols) \
-		-v indent=19 \
-		-v col_on="$$(tput setaf 6)" \
-		-v col_off="$$(tput sgr0)" \
-	'{ \
-		printf "%s%*s%s ", col_on, -indent, $$1, col_off; \
-		n = split($$2, words, " "); \
-		line_length = ncol - indent; \
-		for (i = 1; i <= n; i++) { \
-			line_length -= length(words[i]) + 1; \
-			if (line_length <= 0) { \
-				line_length = ncol - indent - length(words[i]) - 1; \
-				printf "\n%*s ", -indent, " "; \
-			} \
-			printf "%s ", words[i]; \
-		} \
-		printf "\n"; \
-	}' \
-	| more $(shell test $(shell uname) = Darwin && echo '--no-init --raw-control-chars')
