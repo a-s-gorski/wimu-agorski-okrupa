@@ -1,15 +1,11 @@
 import os
-import sys
 import librosa
 from collections import defaultdict
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List
 
 import music_fsl.util as util
-import torch
-from torch.utils.data import DataLoader
 
 from src.data.class_conditional_dataset import ClassConditionalDataset
-from src.data.episode_dataset import EpisodeDataset
 
 class GoodSounds(ClassConditionalDataset):
     """
@@ -25,6 +21,14 @@ class GoodSounds(ClassConditionalDataset):
     INSTRUMENTS = [
         'flute', 'cello', 'clarinet', 'trumpet', 'violin', 'sax_alto', 'sax_tenor', 'sax_baritone', 'sax_soprano', 'oboe', 'piccolo', 'bass'
     ]
+
+    TRAIN_INSTRUMENTS = [
+        'cello', 'clarinet', 'violin', 'sax_alto', 'sax_baritone', 'sax_soprano', 'piccolo',
+        ]
+
+    TEST_INSTRUMENTS = [
+        'flute', 'trumpet', 'sax_tenor', 'oboe', 'bass'
+        ]
 
     def __init__(self, 
             instruments: List[str] = None,
@@ -91,69 +95,3 @@ class GoodSounds(ClassConditionalDataset):
     def __len__(self) -> int:
         return len(self.tracks)
     
-
-def load_goodsounds_dataset(
-        path: str, sample_rate: Optional[int] = 16000) -> Tuple[IRMAS, IRMAS]:
-    TRAIN_INSTRUMENTS = [
-        'cello', 'clarinet', 'violin', 'sax_alto', 'sax_baritone', 'sax_soprano', 'piccolo',
-        ]
-
-    TEST_INSTRUMENTS = [
-        'flute', 'trumpet', 'sax_tenor', 'oboe', 'bass'
-        ]
-    train_data = GoodSounds(
-        instruments=TRAIN_INSTRUMENTS, 
-        sample_rate=sample_rate,
-        dataset_path = path
-    )
-
-    val_data = GoodSounds(
-        instruments=TEST_INSTRUMENTS, 
-        sample_rate=sample_rate,
-        dataset_path = path
-    )
-    return train_data, val_data
-
-
-def load_goodsounds_episodes(train_data: GoodSounds,
-                        val_data: GoodSounds,
-                        n_way: int = 3,
-                        n_support: int = 5,
-                        n_query: int = 20,
-                        n_train_episodes=1000,
-                        n_val_episodes=50) -> Tuple[EpisodeDataset,
-                                                    EpisodeDataset]:
-    train_episodes = EpisodeDataset(
-        dataset=train_data,
-        n_way=n_way,
-        n_support=n_support,
-        n_query=n_query,
-        n_episodes=n_train_episodes
-    )
-
-    val_episodes = EpisodeDataset(
-        dataset=val_data,
-        n_way=n_way,
-        n_support=n_support,
-        n_query=n_query,
-        n_episodes=n_val_episodes
-    )
-
-    return train_episodes, val_episodes
-
-def prepare_goodsounds_dataloaders(train_episodes: EpisodeDataset,
-                              val_episodes: EpisodeDataset,
-                              num_workers: int = 12) -> Tuple[DataLoader,
-                                                              DataLoader]:
-    train_loader = DataLoader(
-        train_episodes, batch_size=None, num_workers=num_workers)
-    val_loader = DataLoader(
-        val_episodes, batch_size=None, num_workers=num_workers)
-
-    return train_loader, val_loader
-
-def load_goodsounds_dataloaders(input_path: str) -> Tuple[DataLoader, DataLoader]:
-    train_loader = torch.load(os.path.join(input_path, "train_loader.pt"))
-    val_loader = torch.load(os.path.join(input_path, "val_loader.pt"))
-
-    return train_loader, val_loader
