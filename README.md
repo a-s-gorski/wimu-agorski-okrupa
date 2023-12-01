@@ -20,7 +20,7 @@ curl -sSL https://install.python-poetry.org | python3 -
 ```bash 
 make requirements 
 ```
-- If you want to install pytorch without CUDA support, replace pytorch in pyproject.toml in pytorch_cpu.
+- If you want to install pytorch with CUDA support, replace {version = "^2.1.1"} in pyproject.toml with {version = "^2.1.1", "source": "pytorch"}.
 3) To download data first setup environment variables ACCESS_KEY_ID and SECRET_ACCESS_KEY or directly update the Makefile, then run `make download_data`
 4) To start data loading, run `make dataset`.
 
