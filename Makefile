@@ -32,8 +32,8 @@ download_data:
 		exit 1; \
 	fi
 	dvc remote modify origin endpointurl https://dagshub.com/a-s-gorski/datasets-wimu.s3
-	dvc remote modify origin --local access_key_id c1a680246e6ad9263189cd51095a90f562055e4e
-	dvc remote modify origin --local secret_access_key c1a680246e6ad9263189cd51095a90f562055e4e
+	dvc remote modify origin --local access_key_id $(ACCESS_KEY_ID)
+	dvc remote modify origin --local secret_access_key $(SECRET_ACCESS_KEY)
 	dvc pull -r origin -f
 
 extract_data:
