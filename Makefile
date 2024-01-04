@@ -8,9 +8,7 @@ PROJECT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 # BUCKET = [OPTIONAL] your-bucket-for-syncing-data (do not include 's3://')
 PROFILE = default
 PROJECT_NAME = wimu-gorski-okrupa
-PYTHON_INTERPRETER = python
-ACCESS_KEY_ID = c1a680246e6ad9263189cd51095a90f562055e4e
-SECRET_ACCESS_KEY = c1a680246e6ad9263189cd51095a90f562055e4e
+PYTHON_INTERPRETER = python3
 	
 #################################################################################
 # COMMANDS                                                                      #
@@ -19,8 +17,8 @@ SECRET_ACCESS_KEY = c1a680246e6ad9263189cd51095a90f562055e4e
 ## Install Python Dependencies
 requirements: test_environment
 	$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel poetry==1.7.0
-	$(PYTHON_INTERPRETER) -m poetry shell
-	$(PYTHON_INTERPRETER) -m poetry install
+	$(PYTHON_INTERPRETER) poetry shell
+	$(PYTHON_INTERPRETER) poetry install
 
 update_data:
 	dvc add data/.
