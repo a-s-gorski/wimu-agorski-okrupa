@@ -19,14 +19,10 @@ def get_dataset_loader(dataset_name: str,
                         config: DatasetConfig,
                         output_filepath: str,
                         train_data, val_data, logger):
-    train_episodes, val_episodes = dataset_handler.load_episodes(train_data, val_data, n_way=config.n_way,
-                                                       n_support=config.n_support,
-                                                       n_query=config.n_query, n_train_episodes=config.n_train_episodes,
-                                                       n_val_episodes=config.n_val_episodes)
+    train_episodes, val_episodes = dataset_handler.load_episodes(train_data, val_data, config.n_way, config.n_support, config.n_query, config.n_train_episodes, config.n_val_episodes)
     logger.info(f"Loaded {dataset_name} episodes.")
 
-    train_loader, val_loader = dataset_handler.prepare_dataloaders(
-        train_episodes, val_episodes, num_workers=config.num_workers)
+    train_loader, val_loader = dataset_handler.prepare_dataloaders(train_episodes, val_episodes, config.num_workers)
     logger.info(f"Loaded {dataset_name} loaders.")
 
     os.makedirs(os.path.join(output_filepath, dataset_name), exist_ok=True)

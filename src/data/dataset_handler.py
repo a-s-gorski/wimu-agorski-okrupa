@@ -29,14 +29,7 @@ class DatasetHandler():
         return train_data, val_data
     
 
-    def load_episodes(train_data,
-                            val_data,
-                            n_way: int = 5,
-                            n_support: int = 5,
-                            n_query: int = 20,
-                            n_train_episodes=1000,
-                            n_val_episodes=50) -> Tuple[EpisodeDataset,
-                                                        EpisodeDataset]:
+    def load_episodes(self, train_data, val_data, n_way: int = 5, n_support: int = 5, n_query: int = 20, n_train_episodes: int = 1000, n_val_episodes: int = 50) -> Tuple[EpisodeDataset, EpisodeDataset]:
         train_episodes = EpisodeDataset(
             dataset=train_data,
             n_way=n_way,
@@ -56,7 +49,7 @@ class DatasetHandler():
         return train_episodes, val_episodes
 
 
-    def prepare_dataloaders(train_episodes: EpisodeDataset,
+    def prepare_dataloaders(self, train_episodes: EpisodeDataset,
                                 val_episodes: EpisodeDataset,
                                 num_workers: int = 12) -> Tuple[DataLoader,
                                                                 DataLoader]:
