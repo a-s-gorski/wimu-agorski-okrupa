@@ -5,3 +5,4 @@ n_query: 20
 n_train_episodes: 1000
 n_val_episodes: 50
 num_workers: 10
+model_type: 'protonet'

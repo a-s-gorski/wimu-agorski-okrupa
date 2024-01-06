@@ -4,7 +4,7 @@ from typing import Optional, Tuple
 import torch
 from torch.utils.data import DataLoader
 
-from src.data.episode_dataset import EpisodeDataset
+from src.data.episode_dataset import EpisodeDataset, EpisodeDatasetUnlabeled
 
 class DatasetHandler():
     def __init__(self, Dataset):
@@ -29,8 +29,8 @@ class DatasetHandler():
         return train_data, val_data
     
 
-    def load_episodes(self, train_data, val_data, n_way: int = 5, n_support: int = 5, n_query: int = 20, n_train_episodes: int = 1000, n_val_episodes: int = 50) -> Tuple[EpisodeDataset, EpisodeDataset]:
-        train_episodes = EpisodeDataset(
+    def load_episodes(self, train_data, val_data, n_way: int = 5, n_support: int = 5, n_query: int = 20, n_train_episodes: int = 1000, n_val_episodes: int = 50, episode_type = EpisodeDataset) -> Tuple[EpisodeDataset, EpisodeDataset]:
+        train_episodes = episode_type(
             dataset=train_data,
             n_way=n_way,
             n_support=n_support,
@@ -38,7 +38,7 @@ class DatasetHandler():
             n_episodes=n_train_episodes
         )
 
-        val_episodes = EpisodeDataset(
+        val_episodes = episode_type(
             dataset=val_data,
             n_way=n_way,
             n_support=n_support,

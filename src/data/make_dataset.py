@@ -12,6 +12,7 @@ from src.data.medley_solos_db import MedleySolosDb
 from src.data.dataset_handler import DatasetHandler
 from src.types.config import DatasetConfig
 from src.types.dataset import DatasetType
+from src.types.model import ModelEpisodeType
 from src.utils.yaml_utils import load_yaml_data
 
 def get_dataset_loader(dataset_name: str, 
@@ -19,7 +20,7 @@ def get_dataset_loader(dataset_name: str,
                         config: DatasetConfig,
                         output_filepath: str,
                         train_data, val_data, logger):
-    train_episodes, val_episodes = dataset_handler.load_episodes(train_data, val_data, config.n_way, config.n_support, config.n_query, config.n_train_episodes, config.n_val_episodes)
+    train_episodes, val_episodes = dataset_handler.load_episodes(train_data, val_data, config.n_way, config.n_support, config.n_query, config.n_train_episodes, config.n_val_episodes, ModelEpisodeType[config.model_type].value)
     logger.info(f"Loaded {dataset_name} episodes.")
 
     train_loader, val_loader = dataset_handler.prepare_dataloaders(train_episodes, val_episodes, config.num_workers)
