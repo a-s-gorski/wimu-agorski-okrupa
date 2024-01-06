@@ -11,6 +11,7 @@ class DatasetConfig(BaseModel):
     n_train_episodes: Optional[int] = 1000
     n_val_episodes: Optional[int] = 50
     num_workers: Optional[int] = -1
+    model_type: Optional[Literal["protonet", "softkmeans"]] = "protonet"
 
     def __repr__(self):
         repr_dict = {k: v for k, v in self.model_dump().items()
@@ -25,6 +26,7 @@ class TrainingConfig(BaseModel):
     val_check_interval: Optional[int] = 50
     profiler: Optional[Literal["simple"]] = "simple"
     logger: Optional[Literal["tensorboard"]] = "tensorboard"
+    model_type: Optional[Literal["protonet", "softkmeans"]] = "protonet"
 
     def __repr__(self):
         repr_dict = {k: v for k, v in self.model_dump().items()

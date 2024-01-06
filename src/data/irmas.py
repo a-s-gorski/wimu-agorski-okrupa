@@ -4,11 +4,8 @@ from collections import defaultdict
 from typing import Dict, List, Optional, Tuple
 
 import music_fsl.util as util
-import torch
-from torch.utils.data import DataLoader
 
 from src.data.class_conditional_dataset import ClassConditionalDataset
-from src.data.episode_dataset import EpisodeDataset
 
 
 class IRMAS(ClassConditionalDataset):
@@ -39,6 +36,30 @@ class IRMAS(ClassConditionalDataset):
         'tru': 'Trumpet',
         'vio': 'Violin',
         'voi': 'Human singing voice'}
+    
+    TRAIN_INSTRUMENTS = [
+        'Flute', 'Organ', 'Saxophone',
+        'Trumpet', 'Violin', 'Electric guitar'
+    ]
+
+    TRAIN_INSTRUMENTS_KEY = {
+        'flu': 'Flute',
+        'org': 'Organ',
+        'sax': 'Saxophone',
+        'tru': 'Trumpet',
+        'vio': 'Violin',
+        'gel': 'Electric guitar'}
+
+    TEST_INSTRUMENTS = [
+        'Cello', 'Piano', 'Clarinet', 'Acoustic guitar', 'Human singing voice'
+    ]
+
+    TEST_INSTRUMENTS_KEY = {
+        'cel': 'Cello',
+        'gac': 'Acoustic guitar',
+        'pia': 'Piano',
+        'voi': 'Human singing voice',
+        'cla': 'Clarinet'}
 
     def __init__(self,
                  instruments: List[str] = None,
@@ -143,86 +164,18 @@ class IRMAS(ClassConditionalDataset):
 
 def load_irmas_dataset(
         path: str, sample_rate: Optional[int] = 16000) -> Tuple[IRMAS, IRMAS]:
-    TRAIN_INSTRUMENTS = [
-        'Flute', 'Organ', 'Saxophone',
-        'Trumpet', 'Violin', 'Electric guitar'
-    ]
 
-    TRAIN_INSTRUMENTS_KEY = {
-        'flu': 'Flute',
-        'org': 'Organ',
-        'sax': 'Saxophone',
-        'tru': 'Trumpet',
-        'vio': 'Violin',
-        'gel': 'Electric guitar'}
-
-    TEST_INSTRUMENTS = [
-        'Cello', 'Piano', 'Clarinet', 'Acoustic guitar', 'Human singing voice'
-    ]
-
-    TEST_INSTRUMENTS_KEY = {
-        'cel': 'Cello',
-        'gac': 'Acoustic guitar',
-        'pia': 'Piano',
-        'voi': 'Human singing voice',
-        'cla': 'Clarinet'}
     train_data = IRMAS(
-        instruments=TRAIN_INSTRUMENTS,
-        instruments_key=TRAIN_INSTRUMENTS_KEY,
+        instruments=IRMAS.TRAIN_INSTRUMENTS,
+        instruments_key=IRMAS.TRAIN_INSTRUMENTS_KEY,
         sample_rate=sample_rate,
         dataset_path=path
     )
 
     val_data = IRMAS(
-        instruments=TEST_INSTRUMENTS,
-        instruments_key=TEST_INSTRUMENTS_KEY,
+        instruments=IRMAS.TEST_INSTRUMENTS,
+        instruments_key=IRMAS.TEST_INSTRUMENTS_KEY,
         sample_rate=sample_rate,
         dataset_path=path
     )
     return train_data, val_data
-
-
-def load_irmas_episodes(train_data: IRMAS,
-                        val_data: IRMAS,
-                        n_way: int = 3,
-                        n_support: int = 5,
-                        n_query: int = 20,
-                        n_train_episodes=1000,
-                        n_val_episodes=50) -> Tuple[EpisodeDataset,
-                                                    EpisodeDataset]:
-    train_episodes = EpisodeDataset(
-        dataset=train_data,
-        n_way=n_way,
-        n_support=n_support,
-        n_query=n_query,
-        n_episodes=n_train_episodes
-    )
-
-    val_episodes = EpisodeDataset(
-        dataset=val_data,
-        n_way=n_way,
-        n_support=n_support,
-        n_query=n_query,
-        n_episodes=n_val_episodes
-    )
-
-    return train_episodes, val_episodes
-
-
-def prepare_irmas_dataloaders(train_episodes: EpisodeDataset,
-                              val_episodes: EpisodeDataset,
-                              num_workers: int = 12) -> Tuple[DataLoader,
-                                                              DataLoader]:
-    train_loader = DataLoader(
-        train_episodes, batch_size=None, num_workers=num_workers)
-    val_loader = DataLoader(
-        val_episodes, batch_size=None, num_workers=num_workers)
-
-    return train_loader, val_loader
-
-
-def load_irmas_dataloaders(input_path: str) -> Tuple[DataLoader, DataLoader]:
-    train_loader = torch.load(os.path.join(input_path, "train_loader.pt"))
-    val_loader = torch.load(os.path.join(input_path, "val_loader.pt"))
-
-    return train_loader, val_loader
