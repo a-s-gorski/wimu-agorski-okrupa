@@ -46,9 +46,16 @@ extract_data:
 dataset:
 	$(PYTHON_INTERPRETER) -m src.data.make_dataset irmas config/dataset.yml data/interim/irmas/IRMAS-TrainingData data/processed
 
+dataset_good_sounds:
+	$(PYTHON_INTERPRETER) -m src.data.make_dataset good_sounds config/dataset.yml data/interim/good_sounds/good-sounds/sound_files data/processed
+
 ## Train the model
 train:
 	$(PYTHON_INTERPRETER) -m src.models.train_model irmas config/training.yml data/processed data/model_output/irmas
+
+## Train the model
+train_good_sounds:
+	$(PYTHON_INTERPRETER) -m src.models.train_model good_sounds config/training.yml data/processed data/model_output/good_sounds
 
 format_code:
 	cd src && isort . && autopep8 -i -r --max-line-length 79 -a -a -a  .

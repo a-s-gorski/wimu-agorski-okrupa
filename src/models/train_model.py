@@ -9,7 +9,7 @@ Usage:
 
 Arguments:
     dataset_type (str): The type of dataset to train on. Supported values: 'irmas', 'good_sounds', 'wavefiles',
-    'tiny_sol'.
+    'tiny_sol', 'medley_solos_db'.
     config_path (str): Path to the YAML configuration file containing training parameters.
     input_filepath (str): Path to the input data directory.
     model_output_filepath (str): Path to the output directory for saving the trained models.
@@ -26,7 +26,7 @@ import os
 
 import click
 
-from src.data.irmas import load_irmas_dataloaders
+from src.data.dataset_handler import DatasetHandler
 from src.models.few_shot_learner import FewShotLearner
 from src.models.models import get_protypical_net
 from src.models.trainer import get_trainer
@@ -35,15 +35,16 @@ from src.types.dataset import DatasetType
 from src.utils.yaml_utils import load_yaml_data
 
 
-def handle_irmas_training(
+def handle_training(
         config: TrainingConfig,
         input_filepath: str,
-        model_output_filepath: str):
+        model_output_filepath: str,
+        dataset: str):
     logger = logging.getLogger(__name__)
 
-    train_loader, val_loader = load_irmas_dataloaders(
-        os.path.join(input_filepath, "irmas"))
-    logger.info("Loaded irmas dataloaders.")
+    train_loader, val_loader = DatasetHandler.load_dataloaders(
+        os.path.join(input_filepath, dataset))
+    logger.info(f"Loaded {dataset} dataloaders.")
 
     trainer = get_trainer(config=config, checkpoint_path=model_output_filepath)
     logger.info("Created trainer object. Staring training.")
@@ -74,17 +75,20 @@ def main(
 
     match dataset_type:
         case DatasetType.IRMAS:
-            handle_irmas_training(
-                training_config, input_filepath, model_output_filepath)
+            handle_training(
+                training_config, input_filepath, model_output_filepath, 'irmas')
         case DatasetType.GOOD_SOUNDS:
-            # TODO - implement good_sounds
-            pass
+            handle_training(
+                training_config, input_filepath, model_output_filepath, 'good_sounds')
         case DatasetType.WAVEFILES:
             # TODO - implement wavefiles
             pass
         case DatasetType.TINY_SOL:
-            # TODO - implement tiny_sol
-            pass
+            handle_training(
+                training_config, input_filepath, model_output_filepath, 'tiny_sol')
+        case DatasetType.MEDLEY_SOLOS_DB:
+            handle_training(
+                training_config, input_filepath, model_output_filepath, 'medley_solos_db')    
         case _:
             pass
 
