@@ -2,6 +2,8 @@ sample_rate: 16000
 n_way: 3
 n_support: 5
 n_query: 20
+n_unlabeled: 5
+n_distractor: 2
 n_train_episodes: 1000
 n_val_episodes: 50
 num_workers: 10
