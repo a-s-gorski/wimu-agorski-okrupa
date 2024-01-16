@@ -163,7 +163,7 @@ class EpisodeDatasetUnlabeled(EpisodeDataset):
         n_distractor: int = 0,
         n_episodes: int = 100,
     ):
-        super().__init__(dataset, n_way, n_support, n_query, n_episodes)
+        super().__init__(dataset=dataset, n_way=n_way, n_support=n_support, n_query=n_query, n_episodes=n_episodes)
         self.n_unlabeled = n_unlabeled
 
     def __getitem__(self, index: int) -> Tuple[Dict, Dict]:
@@ -240,7 +240,7 @@ class EpisodeDatasetUnlabeled(EpisodeDataset):
         print(f"  Target Shape: {query['target'].shape}")
 
 
-class EpisodeDatasetUnlabeledWithDistractor(torch.utils.data.Dataset):
+class EpisodeDatasetUnlabeledWithDistractor(EpisodeDataset):
     """
         A dataset for sampling few-shot learning tasks from a class-conditional dataset with unlabeled data.
 
@@ -268,14 +268,9 @@ class EpisodeDatasetUnlabeledWithDistractor(torch.utils.data.Dataset):
         n_distractor: int = 0,
         n_episodes: int = 100,
     ):
-        self.dataset = dataset
-
-        self.n_way = n_way
-        self.n_support = n_support
-        self.n_query = n_query
+        super().__init__(dataset=dataset, n_way=n_way, n_support=n_support, n_query=n_query, n_episodes=n_episodes)
         self.n_unlabeled = n_unlabeled
         self.n_distractor = n_distractor
-        self.n_episodes = n_episodes
 
     def __getitem__(self, index: int) -> Tuple[Dict, Dict]:
         """Sample an episode from the class-conditional dataset.
