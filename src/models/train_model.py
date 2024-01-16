@@ -28,7 +28,7 @@ import click
 
 from src.data.dataset_handler import DatasetHandler
 from src.models.few_shot_learner import FewShotLearner
-from src.models.models import get_protypical_net
+from src.models.models import get_protypical_net, get_learner
 from src.models.trainer import get_trainer
 from src.types.config import TrainingConfig
 from src.types.dataset import DatasetType
@@ -50,7 +50,7 @@ def handle_training(
     logger.info("Created trainer object. Staring training.")
 
     protype_net = get_protypical_net(config=config)
-    model = FewShotLearner(protonet=protype_net)
+    model = get_learner(config=config, protonet=protype_net)
 
     trainer.fit(model, train_loader, val_dataloaders=val_loader)
 
