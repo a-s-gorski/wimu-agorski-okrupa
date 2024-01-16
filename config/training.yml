@@ -1,7 +1,9 @@
 sample_rate: 16000
-max_epochs: 1
-log_every_n_steps: 1
-val_check_interval: 50
+max_epochs: 10
+log_every_n_steps: 10
+val_check_interval: 500
 profiler: "simple"
-logger: "tensorboard"
 model_type: 'protonet'
+logger: "wandb"
+wand_project_name: "wimu-agorski-okrupa"
+model_output_path: "models/irmas"
