@@ -14,10 +14,12 @@ class ModelEpisodeType(Enum):
     softkmeans = EpisodeDatasetUnlabeled
     softkmeansdistractor = EpisodeDatasetUnlabeledWithDistractor
 
+
 class PrototypicalNetType(Enum):
     protonet = PrototypicalNet
     softkmeans = PrototypicalNetKSoft
     softkmeansdistractor = PrototypicalNetKSoftWithDistractor
+
 
 class FewShotLearnerType(Enum):
     protonet = FewShotLearner

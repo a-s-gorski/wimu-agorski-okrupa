@@ -57,6 +57,12 @@ train:
 train_good_sounds:
 	$(PYTHON_INTERPRETER) -m src.models.train_model good_sounds config/training.yml data/processed data/model_output/good_sounds
 
+infer:
+	$(PYTHON_INTERPRETER) -m src.deployment.serve_model config/deployment.yml
+
+deploy:
+	export CONFIG_PATH=config/deployment.yml && $(PYTHON_INTERPRETER) -m src.deployment.deploy localhost 8000
+
 format_code:
 	cd src && isort . && autopep8 -i -r --max-line-length 79 -a -a -a  .
 
