@@ -63,6 +63,9 @@ infer:
 deploy:
 	export CONFIG_PATH=config/deployment.yml && $(PYTHON_INTERPRETER) -m src.deployment.deploy localhost 8000
 
+e2e_test:
+	$(PYTHON_INTERPRETER) -m tests.e2e.test_e2e
+
 format_code:
 	cd src && isort . && autopep8 -i -r --max-line-length 79 -a -a -a  .
 

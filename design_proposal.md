@@ -144,3 +144,68 @@ Po zdefiniowaniu modelu należy wywołać komendę `make dataset*`.
 Po uzyskaniu DataLoadera dla wybranego zbioru danych należy również zdefiniowaniu `model_type: 'softkmeansdistractor'` w pliku `config/training.yml`. 
 
 Po zdefiniowaniu modelu oraz opcjonalnie dodatkowych argumentów należy wywołać komendę `make train`.
+
+
+##### Spełnienie wymagań technologicznych
+Modele zostały zaimplementowane z użyciem Pytorch Lightninga tak jak było w opisywanym przez nas rozwiązaniu.
+Dodatakowo udało nam się też zintegrować proces uczenia ze śledzeniem i logowaniem przy pomocy tensorboarda
+albo weights and biases. Kod w pythonie przestrzega dobre praktyki - korzysta z walidacji przy pomocy pydantic-a.
+Dodatakowo kluczowe wartości związane z przetwarzaniem danych, trenowaniem i wdrożeniem są zawarte w plikach
+config/dataset.yml, config/deployment.yml i training.yml co pozwala na uproszczoną pracę nad rozwiązaniem.
+Dodaliśmy także aplikację w streamlicie oraz wdrożenie modelu przy pomocy fastapi.
+
+##### Testowanie wdrożenia
+Kod zajmujący się testowaniem wdrożenia znajduje się w folderze tests/e2e/test_e2e.py. Żeby mógł zadziałać poprawnie,
+użytkownik musi wcześniej wykonać instrukcję
+```bash
+make deploy
+``` 
+a następnie przetestować wdrożenie przy pomocy
+```
+make e2e_test
+```
+
+##### Dokumentacja API
+
+###### Endpoint: /predict
+Ten punkt końcowy API przyjmuje zbiór wsparcia (support) i zbiór zapytań (query) jako wejście, wykonuje wnioskowanie przy użyciu określonego modelu i zwraca wynik predykcji.
+
+###### Parametry żądania:
+- support (typ: SupportModel): Model Pydantic reprezentujący zbiór wsparcia, który zawiera dane audio, etykiety docelowe i listę nazw klas.
+- query (typ: QueryModel): Model Pydantic reprezentujący zbiór zapytań, który zawiera dane audio, dla których mają zostać wykonane predykcje.
+###### Odpowiedź:
+Odpowiedź API to obiekt JSON zawierający następujące pola:
+
+- logits (typ: List[List[float]]): Surowe wyniki z modelu dla każdego próbkowania z zapytania.
+- predicted_labels (typ: List[int]): Przewidziane etykiety odpowiadające próbkom z zapytania.
+- predicted_classes (typ: List[str]): Przewidziane nazwy klas odpowiadające próbkom z zapytania.
+
+###### Modele danych
+- SupportModel
+Ten model Pydantic reprezentuje zbiór wsparcia, zapewniając, że dane wejściowe spełniają określone wymagania.
+
+audio (typ: List[List[List[float]]]): Lista 3D reprezentująca dane audio dla każdej próbki w zbiorze wsparcia.
+target (typ: List[int]): Lista etykiet docelowych odpowiadających każdej próbce w zbiorze wsparcia.
+classlist (typ: List[str]): Lista nazw klas odpowiadających etykietom docelowym.
+Walidacja:
+Dane audio są walidowane, aby sprawdzić, czy mają oczekiwany format (lista 3D).
+Dane target są walidowane, aby zapewnić, że wszystkie klasy docelowe mają takie same rozkłady.
+
+- QueryModel 
+Ten model Pydantic reprezentuje zbiór zapytań, zapewniając, że dane wejściowe spełniają określone wymagania.
+
+audio (typ: List[List[List[float]]]): Lista 3D reprezentująca dane audio dla każdej próbki w zbiorze zapytań.
+Walidacja:
+Dane audio są walidowane, aby sprawdzić, czy mają oczekiwany format (lista 3D).
+PredictOutput
+Ten model Pydantic reprezentuje wynik API.
+
+logits (typ: List[List[float]]): Surowe wyniki z modelu dla każdego próbkowania z zapytania.
+predicted_labels (typ: List[int]): Przewidziane etykiety odpowiadające próbkom z zapytania.
+predicted_classes (typ: List[str]): Przewidziane nazwy klas odpowiadające próbkom z zapytania.
+
+###### MLOps
+
+Główną platformą z której korzystaliśmy do moniotorowania modelu było "weights and biases". Wyniki można obserwować
+tutaj - https://wandb.ai/adamsebastiangorski/wimu-agorski-okrupa?workspace=user-adamsebastiangorski. Żeby mógł
+Pan zobaczyć rezultaty potrzebowalibyśmy Pana maila. Weights and Biases integruje się bardzo dobrze z pytorch-lightningiem.
