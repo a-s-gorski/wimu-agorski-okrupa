@@ -19,7 +19,6 @@ model = model.to("cpu")
 @app.get("/predict", response_model=PredictOutput)
 def predict(support: SupportModel, query: QueryModel):
     logits = run_inference(model, support, query)
-    print("logits", logits)
     predicted_labels, predicted_classes = calculate_predictions(logits, support=support)
 
     return PredictOutput(logits=logits, predicted_labels=predicted_labels, predicted_classes=predicted_classes)
