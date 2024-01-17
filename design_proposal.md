@@ -131,7 +131,7 @@ $$
 
 Przyjmujemy upraszczające założenie, że klaster dystraktorów ma prototyp wyśrodkowany na początku. Rozważamy również wprowadzenie skali długości $r_k$ do reprezentowania zmian w odległościach wewnątrz klastra odległości, szczególnie dla klastra rozpraszającego.
 
-$$z_{j,k}^{\`} = \frac{\exp(-\frac{1}{r_k^2}d(f_\phi(x_j^{\`}),c_k) - A(r_k)}{\sum_{k'} \exp(-\frac{1}{r_k^2}d(f_\phi(x_j^{\`}),c_k') - A(r_k^{\`})}$$
+$$z_{j,k}^{\`} = \frac{\exp(-\frac{1}{r_k^2}d(f_\phi(x_j^{\`}),c_k) - A(r_k)}{\sum_{k'} \exp(-\frac{1}{r_k^2}d(f_\phi(x_j^{\`}),c_k') - A(r_k^{\`})},  \quad \text{gdzie} \quad  A(r_k^{\`}) = \frac{1}{2} log(2 \pi) + log(r)$$
 
 Ostatecznie, uzyskujemy udoskonalone prototypy poprzez uwzględnienie 
 tych nieoznakowanych przykładów tak jak zostało to opisane w sieci prototypowej z soft k-means. 
